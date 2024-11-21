@@ -10,6 +10,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    credentials: {
+        type: String,
+        enum: ['Level-1', 'Level-2', 'Level-3', 'Level-4'],
+        required: true
+    },
+    roles: {
+        type: String,
+        enum: ['Doctor', 'Nurse', 'Tech', 'Pharmicist'],
+        required: true
+    }
+
 });
 
 userSchema.set('toJSON', {
