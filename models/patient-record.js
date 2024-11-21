@@ -20,6 +20,7 @@ const patientRecordSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Visit'
   },
-});
+},
+{ timestamps: true });
 
 module.exports = mongoose.model('PatientRecord', patientRecordSchema);

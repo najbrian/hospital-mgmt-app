@@ -9,21 +9,18 @@ const notesSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
-});
+},
+{ timestamps: true });
 
 const visitSchema = new mongoose.Schema({
   status: {
     type: String,
-    enum: ['Admitted', 'Discharged', 'Waiting', 'Left without being seen', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE', 'HOSPITALIZED', 'DECEASED'],
+    enum: ['Admitted', 'Discharged', 'Waiting', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE',],
     required: true
   },
   checkedInBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
-  },
-  date: {
-    type: Date,
     required: true
   },
   notes: [notesSchema],
@@ -35,6 +32,7 @@ const visitSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-});
+},
+{ timestamps: true });
 
 module.exports = mongoose.model('Visit', visitSchema);
