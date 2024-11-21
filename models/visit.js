@@ -15,7 +15,7 @@ const notesSchema = new mongoose.Schema({
 const visitSchema = new mongoose.Schema({
   status: {
     type: String,
-    enum: ['Admitted', 'Discharged', 'Waiting', 'Left without being seen', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE', 'HOSPITALIZED', 'DECEASED'],
+    enum: ['Admitted', 'Discharged', 'Waiting', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE',],
     required: true
   },
   checkedInBy: {
