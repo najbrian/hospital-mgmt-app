@@ -9,7 +9,8 @@ const notesSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
-});
+},
+{ timestamps: true });
 
 const visitSchema = new mongoose.Schema({
   status: {
@@ -22,10 +23,6 @@ const visitSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  date: {
-    type: Date,
-    required: true
-  },
   notes: [notesSchema],
   diagnosis: {
     type: String,
@@ -35,6 +32,7 @@ const visitSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-});
+},
+{ timestamps: true });
 
 module.exports = mongoose.model('Visit', visitSchema);
