@@ -18,12 +18,11 @@ const visitSchema = new mongoose.Schema({
     enum: ['Admitted', 'Discharged', 'Waiting', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE',],
     required: true
   },
-  checkedInBy: {
+  checkedinby: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  notes: [notesSchema],
   diagnosis: {
     type: String,
     required: true
@@ -32,6 +31,7 @@ const visitSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  notes: [notesSchema]
 },
 { timestamps: true });
 
