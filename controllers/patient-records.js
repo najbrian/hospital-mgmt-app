@@ -25,5 +25,37 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req,res) => {
+  try {
+    const record = await PatientRecord.findById(req.params.id)
+    .populate('visit')
+    res.status(200).json(record)
+  } catch {
+    res.status(404).json({ error: 'Record not found' })
+  }
+})
+
+router.put( '/:id', async (req, res) => {
+  try {
+    const updatedRecord = await PatientRecord.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+    res.status(200).json(updatedRecord)
+  } catch {
+    res.status(404).json({ error: 'Record not found' })
+  }
+})
+
+router.delete('/:id', async (req,res) => {
+  try {
+    const deletedRecord = await PatientRecord.findByIdAndDelete(req.params.id)
+    res.status(200).json(deletedRecord)
+  } catch {
+    res.status(500).json({ error: 'Record not found' })
+  }
+})
+
 
 module.exports = router;
