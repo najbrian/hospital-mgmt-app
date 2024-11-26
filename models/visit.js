@@ -13,6 +13,11 @@ const notesSchema = new mongoose.Schema({
 { timestamps: true });
 
 const visitSchema = new mongoose.Schema({
+  patient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PatientRecord',
+    required: true
+  },
   status: {
     type: String,
     enum: ['Admitted', 'Discharged', 'Waiting', 'LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE',],
