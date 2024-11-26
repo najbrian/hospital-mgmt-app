@@ -5,16 +5,26 @@ const verifyToken = require('../middleware/verify-token');
 
 router.use(verifyToken)
 
-// Gets all visits
-router.get('/', async (req, res) => {
+// Gets all visits by patient
+router.get('/:patientId', async (req, res) => {
   try {
-    const visits = await Visit.find({})
+    const visits = await Visit.find({patient: req.params.patientId})
     .populate('checkedinby')
-    .populate('notes')
     .sort({date: -1})
     res.status(200).json(visits)
   } catch (error) {
     res.status(500).json({ error: error.message })
+  }
+})
+
+// Get a single visit
+router.get('/:patientId/:visitId', async (req,res) => {
+  try {
+    const visit = await Visit.findById(req.params.visitId)
+    .populate('checkedinby')
+    res.status(200).json(visit)
+  } catch {
+    res.status(404).json({ error: 'Visit not found' })
   }
 })
 
@@ -29,22 +39,11 @@ router.post('/', async (req, res) => {
   }
 })
 
-// Get a single visit
-router.get('/:id', async (req,res) => {
-  try {
-    const visit = await Visit.findById(req.params.id)
-    .populate('checkedinby')
-    res.status(200).json(visit)
-  } catch {
-    res.status(404).json({ error: 'Visit not found' })
-  }
-})
-
 // Update a visit
-router.put( '/:id', async (req, res) => {
+router.put( '/:patientId/:visitId', async (req, res) => {
   try {
     const updatedVisit = await Visit.findByIdAndUpdate(
-      req.params.id,
+      req.params.visitId,
       req.body,
       { new: true }
     )
@@ -55,19 +54,23 @@ router.put( '/:id', async (req, res) => {
 })
 
 // Delete a visit
-router.delete('/:id', async (req,res) => {
+router.delete('/:patientId/:visitId', async (req,res) => {
+  console.log('req.user:', req.user.credentials);
   try {
-    const deletedVisit = await Visit.findByIdAndDelete(req.params.id)
+    if (req.user.credentials !== 'Level-1') {
+      return res.status(401).json({ error: 'You are not authorized to delete this visit' })
+    }
+    const deletedVisit = await Visit.findByIdAndDelete(req.params.visitId)
     res.status(200).json(deletedVisit)
   } catch {
-    res.status(500).json({ error: 'Visit not found' })
+    res.status(404).json({ error: 'Visit not found' })
   }
 })
 
 // Get notes for a visit
-router.get('/:id/notes', async (req, res) => {
+router.get('/:patientId/notes', async (req, res) => {
   try {
-    const visit = await Visit.findById(req.params.id)
+    const visit = await Visit.findById(req.params.patientId)
     .populate('notes')
     .sort({date: -1})
     res.status(200).json(visit.notes)
@@ -77,9 +80,9 @@ router.get('/:id/notes', async (req, res) => {
 })
 
 // Add a note to a visit
-router.post('/:id/notes', async (req, res) => {
+router.post('/:patientId/notes', async (req, res) => {
   try {
-    const visit = await Visit.findById(req.params.id)
+    const visit = await Visit.findById(req.params.patientId)
     visit.notes.push({ ...req.body, owner: req.user._id });
     await visit.save()
     res.status(201).json(visit.notes)
@@ -89,9 +92,9 @@ router.post('/:id/notes', async (req, res) => {
 })
 
 // Update a note for a visit
-router.put('/:id/notes/:noteId', async (req, res) => {
+router.put('/:patientId/notes/:noteId', async (req, res) => {
   try {
-    const visit = await Visit.findById(req.params.id)
+    const visit = await Visit.findById(req.params.patientId)
     const note = visit.notes.id(req.params.noteId)
     if (!note.owner.equals(req.user._id)) {
       return res.status(401).json({ error: 'You are not authorized to update this note' })
@@ -105,9 +108,9 @@ router.put('/:id/notes/:noteId', async (req, res) => {
 })
 
 // Delete a note for a visit
-router.delete('/:id/notes/:noteId', async (req, res) => {
+router.delete('/:patientId/notes/:noteId', async (req, res) => {
   try {
-    const visit = await Visit.findById(req.params.id)
+    const visit = await Visit.findById(req.params.patientId)
     if (!visit.notes.id(req.params.noteId).owner.equals(req.user._id) || req.user.credentials !== 'Level-1') {
       return res.status(401).json({ error: 'You are not authorized to delete this note' })
     }
