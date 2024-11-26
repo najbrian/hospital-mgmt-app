@@ -8,6 +8,7 @@ const testJWTRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
 const profilesRouter = require('./controllers/profiles');
 const patientRecordsRouter = require('./controllers/patient-records');
+const visitsRouter = require('./controllers/visits');
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -22,6 +23,8 @@ app.use('/test-jwt', testJWTRouter);
 app.use('/users', usersRouter);
 app.use('/profiles', profilesRouter);
 app.use('/patient-records', patientRecordsRouter);
+app.use('/visits', visitsRouter);
+
 
 app.listen(3000, () => {
     console.log('The express app is ready!');
